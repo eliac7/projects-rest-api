@@ -72,6 +72,8 @@ router.delete("/:id", getSkill, async (req, res) => {
   }
 });
 
+//Middleware to find the required skill 
+
 async function getSkill(req, res, next) {
   let skill;
   try {
