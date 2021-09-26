@@ -20,6 +20,8 @@ router.post("/", async (req, res) => {
   const skill = new SkillsModel({
     title: req.body.title,
     technologies: req.body.technologies,
+    type: req.body.type,
+    className: req.body.className,
     description: req.body.description,
     URL: {
       live: req.body.URL.live,
@@ -42,6 +44,12 @@ router.patch("/:id", getSkill, async (req, res) => {
   }
   if (req.body.technologies != null) {
     res.skill.technologies = req.body.technologies;
+  }
+  if (req.body.type != null) {
+    res.skill.type = req.body.type;
+  }
+  if (req.body.className != null) {
+    res.skill.className = req.body.className;
   }
   if (req.body.description != null) {
     res.skill.description = req.body.description;
@@ -72,7 +80,7 @@ router.delete("/:id", getSkill, async (req, res) => {
   }
 });
 
-//Middleware to find the required skill 
+//Middleware to find the required skill
 
 async function getSkill(req, res, next) {
   let skill;

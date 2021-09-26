@@ -10,6 +10,14 @@ const Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    required: true,
+  },
+  className: {
+    type: String,
+    required: true,
+  },
   description: {
     type: String,
     required: true,
