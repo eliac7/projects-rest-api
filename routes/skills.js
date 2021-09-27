@@ -13,6 +13,14 @@ router.get("/", async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 });
+//Get one skill
+router.get("/:id", getSkill, async (req, res) => {
+  try {
+    res.json(res.skill);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+});
 
 //Post one skill
 
