@@ -32,8 +32,8 @@ router.post("/", async (req, res) => {
     className: req.body.className,
     description: req.body.description,
     URL: {
-      live: req.body.live,
-      github: req.body.github,
+      live: req.body.URL.live,
+      github: req.body.URL.github,
     },
   });
   try {
