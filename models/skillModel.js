@@ -22,6 +22,9 @@ const Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: mongoose.SchemaTypes.Url,
+  },
   URL: {
     live: { type: mongoose.SchemaTypes.Url },
     github: { type: mongoose.SchemaTypes.Url },

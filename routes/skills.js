@@ -30,6 +30,7 @@ router.post("/", async (req, res) => {
     technologies: req.body.technologies,
     type: req.body.type,
     className: req.body.className,
+    image: req.body.image,
     description: req.body.description,
     URL: {
       live: req.body.URL.live,
@@ -68,6 +69,9 @@ router.patch("/:id", getSkill, async (req, res) => {
   }
   if (req.body.URL.github != null) {
     res.skill.URL.github = req.body.URL.github;
+  }
+  if (req.body.image != null) {
+    res.skill.image = req.body.image;
   }
   try {
     const updatedSkill = await res.skill.save();
