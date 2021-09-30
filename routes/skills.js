@@ -4,6 +4,8 @@ const router = express.Router();
 
 const SkillsModel = require("../models/skillModel");
 
+const { getSkill } = require("../helpers/helpers");
+
 //Get all skills
 router.get("/", async (req, res) => {
   try {
@@ -91,22 +93,5 @@ router.delete("/:id", getSkill, async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 });
-
-//Middleware to find the required skill
-
-async function getSkill(req, res, next) {
-  let skill;
-  try {
-    skill = await SkillsModel.findById(req.params.id);
-    if (skill == null) {
-      return res.status(404).json({ message: "Cannot find skill" });
-    }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-
-  res.skill = skill;
-  next();
-}
 
 module.exports = router;
