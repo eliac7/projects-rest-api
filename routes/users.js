@@ -122,7 +122,7 @@ router.post("/login", async (req, res) => {
 
 //Logout
 
-app.post("/logout", verifyJWT, (req, res) => {
+router.post("/logout", verifyJWT, (req, res) => {
   const refreshToken = req.body.token;
   refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
   res.status(200).json({ msg: "You logged out successfully." });
