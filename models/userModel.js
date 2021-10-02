@@ -17,6 +17,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
+    minlength: 2,
+    maxlength: 30,
   },
   password: {
     type: String,
@@ -25,6 +27,7 @@ const UserSchema = new mongoose.Schema({
   isAdmin: {
     type: Boolean,
     required: true,
+    default: false,
   },
   created: {
     type: Date,

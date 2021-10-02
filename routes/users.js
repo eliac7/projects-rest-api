@@ -20,7 +20,11 @@ router.get("/", verifyJWT, async (req, res) => {
     try {
       const users = await UsersModel.find({}, { password: 0 });
 
-      res.status(200).json({ data: users });
+      if (users && users.length !== 0) {
+        return res.status(200).json({ data: users });
+      } else {
+        return res.status(404).json({ errors: "No users found" });
+      }
     } catch (err) {
       res.status(500).json({ errors: err.message });
     }
@@ -116,9 +120,9 @@ router.post("/login", async (req, res) => {
 router.post("/change-password", verifyJWT, async (req, res) => {
   const id = req.user.id;
 
-  const plainPassword = req.body.password;
+  const plainPassword = req.body.password.toString();
 
-  const hashPassword = await bcrypt.hash(plainPassword, 10);
+  const hashPassword = await (await bcrypt.hash(plainPassword, 10)).toString();
 
   let errors = {};
 
@@ -150,16 +154,15 @@ router.post("/change-password", verifyJWT, async (req, res) => {
     if (Object.entries(errors).length === 0) {
       await UsersModel.findByIdAndUpdate(
         { _id: id },
-        { password: hashPassword }
-      ).then(async (result, err) => {
-        if (result) {
-          res.status(200).json({ msg: "Updated successfully" });
-        } else {
-          (err) => {
+        { password: hashPassword },
+        function (err, result) {
+          if (err) {
             res.status(400).json({ errors: err });
-          };
+          } else {
+            res.status(200).json({ msg: "Updated successfully" });
+          }
         }
-      });
+      );
     } else {
       res.status(400).json({
         errors,
@@ -178,6 +181,90 @@ router.delete("/delete/:id", verifyJWT, getUser, async (req, res) => {
     try {
       await res.user.remove();
       res.json({ message: "User deleted" });
+    } catch (err) {
+      res.status(500).json({ errors: err.message });
+    }
+  } else {
+    res
+      .status(401)
+      .json({ errors: { authorize: "You are not authenticated." } });
+  }
+});
+
+//Update a user
+
+router.patch("/update/:id", verifyJWT, getUser, async (req, res) => {
+  const validator = require("validator");
+
+  const { username, password, email, fullName, isAdmin } = req.body;
+  let errors = {};
+
+  if (username != null) {
+    res.user.username = username;
+  }
+
+  if (
+    !validator.isLength(username, {
+      min: 2,
+      max: 30,
+    })
+  ) {
+    errors.username = "Username should be between 2 and 30 characters";
+  }
+
+  if (validator.isEmpty(username)) {
+    errors.username = "Username is required";
+  }
+
+  if (validator.isEmpty(fullName)) {
+    errors.password = "Full Name is required";
+  }
+
+  if (!validator.isEmail(email)) {
+    errors.email = "Please enter a valid email address";
+  }
+  if (validator.isEmpty(password)) {
+    errors.password = "Password can not be empty";
+  }
+  if (
+    !validator.isLength(password, {
+      min: 6,
+      max: 30,
+    })
+  ) {
+    if (errors.password) {
+      errors.password += " and should be at least 6 characters";
+    } else {
+      errors.password = "Password should be at least 6 characters";
+    }
+  }
+  if (!validator.isBoolean(isAdmin)) {
+    errors.isAdmin = "isAdmin should be boolean.";
+  }
+
+  if (password != null && !errors.password) {
+    res.user.password = await bcrypt.hash(password, 10);
+  }
+  if (email != null && !errors.email) {
+    res.user.email = email;
+  }
+  if (fullName != null && !errors.fullName) {
+    res.user.fullName = fullName;
+  }
+  if (isAdmin != null && !errors.isAdmin) {
+    res.user.isAdmin = isAdmin;
+  }
+
+  //Bail out if errors
+  if (!Object.entries(errors).length === 0) {
+    return res.status(401).json({ errors });
+  }
+
+  // Only admins can update accounts
+  if (req.user.isAdmin) {
+    try {
+      await res.user.save();
+      res.status(200).json({ msg: "User updated" });
     } catch (err) {
       res.status(500).json({ errors: err.message });
     }
