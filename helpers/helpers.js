@@ -33,6 +33,7 @@ const UsersModel = require("../models/userModel");
 require("dotenv").config();
 
 const JWT_TOKEN = process.env.JWT_SECRET_KEY;
+const JWT_REFRESH_TOKEN = process.env.JWT_REFRESH_SECRET_KEY;
 
 const isEmpty = (value) => {
   return (
@@ -46,10 +47,21 @@ const isEmpty = (value) => {
 const generateAccessToken = (user) => {
   return jwt.sign(
     { id: user._id, username: user.username, isAdmin: user.isAdmin },
-    JWT_TOKEN
-    //   {
-    //   expiresIn: "1m",
-    // }
+    JWT_TOKEN,
+    {
+      expiresIn: "15m",
+    }
+  );
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign(
+    {
+      id: user._id,
+      username: user.username,
+      isAdmin: user.isAdmin,
+    },
+    JWT_REFRESH_TOKEN
   );
 };
 
@@ -141,6 +153,7 @@ const getUser = async (req, res, next) => {
 module.exports = {
   isEmpty,
   generateAccessToken,
+  generateRefreshToken,
   verifyJWT,
   validateRegistration,
   getUser,

@@ -11,7 +11,10 @@ const {
   verifyJWT,
   validateRegistration,
   getUser,
+  generateRefreshToken,
 } = require("../helpers/helpers");
+
+let refreshTokens = [];
 
 //Get all users
 
@@ -98,13 +101,15 @@ router.post("/login", async (req, res) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     //Generate an access token
     const accessToken = generateAccessToken(user);
-
+    const RefreshToken = generateRefreshToken(user);
+    refreshTokens.push(RefreshToken);
     res.json({
       data: {
         id: user._id,
         username: user.username,
         isAdmin: user.isAdmin,
         accessToken,
+        RefreshToken,
       },
       msg: "ok",
     });
@@ -113,6 +118,14 @@ router.post("/login", async (req, res) => {
       msg: "Username or password incorrect.",
     });
   }
+});
+
+//Logout
+
+app.post("/logout", verifyJWT, (req, res) => {
+  const refreshToken = req.body.token;
+  refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+  res.status(200).json({ msg: "You logged out successfully." });
 });
 
 //Change password
