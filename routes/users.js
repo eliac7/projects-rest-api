@@ -106,6 +106,7 @@ router.post("/login", async (req, res) => {
     res.json({
       data: {
         id: user._id,
+        fullName: user.fullName,
         username: user.username,
         isAdmin: user.isAdmin,
         accessToken,
@@ -114,7 +115,7 @@ router.post("/login", async (req, res) => {
       msg: "ok",
     });
   } else {
-    res.status(400).json({
+    res.status(403).json({
       msg: "Username or password incorrect.",
     });
   }

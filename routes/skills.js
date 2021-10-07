@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
     const skills = await SkillsModel.find();
     res.json(skills);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ errors: err.message });
   }
 });
 //Get one skill
@@ -20,7 +20,7 @@ router.get("/:id", getSkill, async (req, res) => {
   try {
     res.json(res.skill);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ errors: err.message });
   }
 });
 
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
     const newSkill = await skill.save();
     res.status(201).json(newSkill);
   } catch (err) {
-    res.status(400).json({ msg: err.message });
+    res.status(400).json({ errors: err.message });
   }
 });
 
@@ -79,7 +79,7 @@ router.patch("/:id", getSkill, async (req, res) => {
     const updatedSkill = await res.skill.save();
     res.json(updatedSkill);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ errors: err.message });
   }
 });
 
@@ -90,7 +90,7 @@ router.delete("/:id", getSkill, async (req, res) => {
     await res.skill.remove();
     res.json({ message: "Deleted skill" });
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ errors: err.message });
   }
 });
 
