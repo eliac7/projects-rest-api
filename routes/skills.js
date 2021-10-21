@@ -66,7 +66,6 @@ router.patch("/:id", getSkill, async (req, res) => {
   if (req.body.description != null) {
     res.skill.description = req.body.description;
   }
-
   if (req.body.URL.live != null) {
     res.skill.URL.live = req.body.URL.live;
   }
@@ -75,6 +74,9 @@ router.patch("/:id", getSkill, async (req, res) => {
   }
   if (req.body.image != null) {
     res.skill.image = req.body.image;
+  }
+  if (req.body.fixed != null) {
+    res.skill.fixed = req.body.fixed;
   }
   try {
     const updatedSkill = await res.skill.save();
