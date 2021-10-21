@@ -25,6 +25,10 @@ const Schema = new mongoose.Schema({
   image: {
     type: mongoose.SchemaTypes.Url,
   },
+  fixed: {
+    type: Boolean,
+    default: false,
+  },
   URL: {
     live: { type: mongoose.SchemaTypes.Url },
     github: { type: mongoose.SchemaTypes.Url },

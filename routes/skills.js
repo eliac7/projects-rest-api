@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
     className: req.body.className,
     image: req.body.image,
     description: req.body.description,
+    fixed: req.body.fixed,
     URL: {
       live: req.body.URL.live,
       github: req.body.URL.github,
