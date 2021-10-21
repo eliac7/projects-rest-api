@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "devStart": "nodemon app.js"
   },
   "keywords": [],
@@ -17,7 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.5",
     "mongoose-type-url": "^2.1.0",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.14",
     "validator": "^13.6.0"
   }
 }

@@ -49,7 +49,7 @@ const generateAccessToken = (user) => {
     { id: user._id, username: user.username, isAdmin: user.isAdmin },
     JWT_TOKEN,
     {
-      expiresIn: "15m",
+      expiresIn: process.env.JWT_EXPIRES_IN,
     }
   );
 };
@@ -61,7 +61,10 @@ const generateRefreshToken = (user) => {
       username: user.username,
       isAdmin: user.isAdmin,
     },
-    JWT_REFRESH_TOKEN
+    JWT_REFRESH_TOKEN,
+    {
+      expiresIn: process.env.REFRESH_JWT_EXPIRES_IN,
+    }
   );
 };
 
@@ -73,9 +76,7 @@ const verifyJWT = (req, res, next) => {
 
     jwt.verify(token, JWT_TOKEN, (err, user) => {
       if (err) {
-        return res
-          .status(403)
-          .json({ errors: { authorize: "Token is not valid." } });
+        return res.status(403).json({ errors: "Token is not valid." });
       }
       req.user = user;
       next();
@@ -85,6 +86,24 @@ const verifyJWT = (req, res, next) => {
       .status(401)
       .json({ errors: { authorize: "You are not authenticated." } });
   }
+};
+
+const verifyRefreshJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  const token = authHeader.split(" ")[1];
+
+  if (token === null) {
+    return res.status(403).json({ errors: "Invalid request." });
+  }
+
+  jwt.verify(token, JWT_REFRESH_TOKEN, (err, user) => {
+    if (err) {
+      return res.status(403).json({ errors: "Token is not valid." });
+    }
+    req.user = user;
+    next();
+  });
 };
 
 const validateRegistration = (req, res, next) => {
