@@ -72,7 +72,7 @@ You will need npm.
    ```sh
    git clone https://github.com/eliac7/projects-rest-api.git
    ```
-2. Install Yarn packages
+2. Install NPM packages
    ```sh
    npm install
    ```
