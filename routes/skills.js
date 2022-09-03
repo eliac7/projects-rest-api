@@ -6,21 +6,17 @@ const SkillsModel = require("../models/skillModel");
 
 const { getSkill } = require("../helpers/helpers");
 
-const NodeCache = require("node-cache");
-const myCache = new NodeCache({
-  stdTTL: 300,
-  checkperiod: 120,
-});
+const cache = require("memory-cache");
 
 //Get all skills
 router.get("/", async (req, res) => {
-  if (myCache.has("skills")) {
-    res.status(200).json(myCache.get("skills"));
+  if (cache.get("skills")) {
+    res.status(200).json(cache.get("skills"));
   } else {
     try {
       const skills = await SkillsModel.find();
-      myCache.set("skills", skills);
-      res.json(skills);
+      cache.put("skills", skills, 600000);
+      res.status(200).json(skills);
     } catch (err) {
       res.status(500).json({ errors: err.message });
     }
@@ -28,10 +24,15 @@ router.get("/", async (req, res) => {
 });
 //Get one skill
 router.get("/:id", getSkill, async (req, res) => {
-  try {
-    res.json(res.skill);
-  } catch (err) {
-    res.status(500).json({ errors: err.message });
+  if (cache.get("skill")) {
+    res.status(200).json(cache.get("skill" + req.params.id));
+  } else {
+    try {
+      cache.put("skill" + req.params.id, res.skill, 600000);
+      res.status(200).json(res.skill);
+    } catch (err) {
+      res.status(500).json({ errors: err.message });
+    }
   }
 });
 

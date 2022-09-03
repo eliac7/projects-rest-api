@@ -14,26 +14,22 @@ const {
   generateRefreshToken,
 } = require("../helpers/helpers");
 
-let refreshTokens = [];
+const cache = require("memory-cache");
 
-const NodeCache = require("node-cache");
-const myCache = new NodeCache({
-  stdTTL: 300,
-  checkperiod: 120,
-});
+let refreshTokens = [];
 
 //Get all users
 
 router.get("/", verifyJWT, async (req, res) => {
   if (req.user.isAdmin) {
-    if (myCache.has("users")) {
-      res.status(200).json(myCache.get("users"));
+    if (cache.get("users")) {
+      res.status(200).json(cache.get("users"));
     } else {
       try {
         const users = await UsersModel.find({}, { password: 0 });
 
         if (users && users.length !== 0) {
-          myCache.set("users", users);
+          cache.put("users", users, 600000);
           return res.status(200).json({ data: users });
         } else {
           return res.status(404).json({ errors: "No users found" });
