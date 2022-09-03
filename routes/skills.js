@@ -6,13 +6,21 @@ const SkillsModel = require("../models/skillModel");
 
 const { getSkill } = require("../helpers/helpers");
 
+const NodeCache = require("node-cache");
+const myCache = new NodeCache();
+
 //Get all skills
 router.get("/", async (req, res) => {
-  try {
-    const skills = await SkillsModel.find();
-    res.json(skills);
-  } catch (err) {
-    res.status(500).json({ errors: err.message });
+  if (myCache.has("skills")) {
+    res.status(200).json(myCache.get("skills"));
+  } else {
+    try {
+      const skills = await SkillsModel.find();
+      myCache.set("skills", skills);
+      res.json(skills);
+    } catch (err) {
+      res.status(500).json({ errors: err.message });
+    }
   }
 });
 //Get one skill

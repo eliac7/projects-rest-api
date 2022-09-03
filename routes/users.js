@@ -16,20 +16,28 @@ const {
 
 let refreshTokens = [];
 
+const NodeCache = require("node-cache");
+const myCache = new NodeCache();
+
 //Get all users
 
 router.get("/", verifyJWT, async (req, res) => {
   if (req.user.isAdmin) {
-    try {
-      const users = await UsersModel.find({}, { password: 0 });
+    if (myCache.has("users")) {
+      res.status(200).json(myCache.get("users"));
+    } else {
+      try {
+        const users = await UsersModel.find({}, { password: 0 });
 
-      if (users && users.length !== 0) {
-        return res.status(200).json({ data: users });
-      } else {
-        return res.status(404).json({ errors: "No users found" });
+        if (users && users.length !== 0) {
+          myCache.set("users", users);
+          return res.status(200).json({ data: users });
+        } else {
+          return res.status(404).json({ errors: "No users found" });
+        }
+      } catch (err) {
+        res.status(500).json({ errors: err.message });
       }
-    } catch (err) {
-      res.status(500).json({ errors: err.message });
     }
   } else {
     res
