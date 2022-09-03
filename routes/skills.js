@@ -7,7 +7,10 @@ const SkillsModel = require("../models/skillModel");
 const { getSkill } = require("../helpers/helpers");
 
 const NodeCache = require("node-cache");
-const myCache = new NodeCache();
+const myCache = new NodeCache({
+  stdTTL: 300,
+  checkperiod: 120,
+});
 
 //Get all skills
 router.get("/", async (req, res) => {

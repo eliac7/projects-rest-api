@@ -17,7 +17,10 @@ const {
 let refreshTokens = [];
 
 const NodeCache = require("node-cache");
-const myCache = new NodeCache();
+const myCache = new NodeCache({
+  stdTTL: 300,
+  checkperiod: 120,
+});
 
 //Get all users
 
