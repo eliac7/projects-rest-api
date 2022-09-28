@@ -25,6 +25,9 @@ const Schema = new mongoose.Schema({
   image: {
     type: mongoose.SchemaTypes.Url,
   },
+  imageDeleteUrl: {
+    type: String,
+  },
   fixed: {
     type: Boolean,
     default: false,
