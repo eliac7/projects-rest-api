@@ -31,4 +31,4 @@ app.use("/api/users/", UsersRouter);
 app.use("/api/", (req, res) => {
   res.status(301).json({ msg: "Nothing to see here." });
 });
-app.listen(PORT);
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

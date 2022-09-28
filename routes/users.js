@@ -29,7 +29,7 @@ router.get("/", verifyJWT, async (req, res) => {
         const users = await UsersModel.find({}, { password: 0 });
 
         if (users && users.length !== 0) {
-          cache.put("users", users, 600000);
+          cache.put("users", users, 10000);
           return res.status(200).json({ data: users });
         } else {
           return res.status(404).json({ errors: "No users found" });
