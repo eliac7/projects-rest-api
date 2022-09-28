@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
   } else {
     try {
       const skills = await SkillsModel.find();
-      cache.put("skills", skills, 600000);
+      cache.put("skills", skills, 10000);
       res.status(200).json(skills);
     } catch (err) {
       res.status(500).json({ errors: err.message });
@@ -28,7 +28,7 @@ router.get("/:id", getSkill, async (req, res) => {
     res.status(200).json(cache.get("skill" + req.params.id));
   } else {
     try {
-      cache.put("skill" + req.params.id, res.skill, 600000);
+      cache.put("skill" + req.params.id, res.skill, 10000);
       res.status(200).json(res.skill);
     } catch (err) {
       res.status(500).json({ errors: err.message });
