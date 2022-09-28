@@ -45,6 +45,7 @@ router.post("/", async (req, res) => {
     type: req.body.type,
     className: req.body.className,
     image: req.body.image,
+    imageDeleteUrl: req.body.imageDeleteUrl,
     description: req.body.description,
     fixed: req.body.fixed,
     URL: {
