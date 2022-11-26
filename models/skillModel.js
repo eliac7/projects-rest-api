@@ -38,4 +38,4 @@ const Schema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Skills", Schema);
+module.exports = mongoose.model("Skill", Schema);
